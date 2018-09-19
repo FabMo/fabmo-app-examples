@@ -37,12 +37,18 @@
 	</p>
 
 	<script type="text/javascript">
+		// Create the dashboard object
 		var dashboard = new FabMoDashboard();
+
+		// Bind a handler to the status event that will update our position display
 		dashboard.on('status', function(status) {
 			document.getElementById('x-position').innerHTML = status.posx;
 			document.getElementById('y-position').innerHTML = status.posy;
 			document.getElementById('z-position').innerHTML = status.posz;
 		});
+
+		// Request a status report, since we won't get one otherwise until the tool moves, the keypad is opened, etc?
+		dashboard.requestStatusReport();
 	</script>
 </body>
 </html>
