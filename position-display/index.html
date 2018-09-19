@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>FabMo Position Example App</title>
+	<style>
+		/* Some styling, just so the page looks less "vanilla" */
+
+		body {
+			margin: 40px;
+			font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+		}
+		.position-label {
+			font-weight: bolder;
+			font-size: 1.5rem;
+		}
+
+		.position-label span {
+			font-weight: normal;
+		}
+
+		h1 {
+			font-size: 2.5rem;
+		}
+
+	</style>
+	<script type="text/javascript" src="js/fabmo.js"></script>
+</head>
+<body>
+	<h1> Tool Position </h1>
+	<p>
+		This example shows how to display the tool's position in an app.  The numbers below will update as the tools position changes.  Open the keypad and change the tools position to see the numbers change, or run a job and return to this app to watch the position update live.
+	</p>
+	<p>
+		<div class="position-label">X Position: <span id="x-position" class="position-number" /></div>
+		<div class="position-label">Y Position: <span id="y-position" class="position-number" /></div>
+		<div class="position-label">Z Position: <span id="z-position" class="position-number" /></div>
+	</p>
+
+	<script type="text/javascript">
+		var dashboard = new FabMoDashboard();
+		dashboard.on('status', function(status) {
+			document.getElementById('x-position').innerHTML = status.posx;
+			document.getElementById('y-position').innerHTML = status.posy;
+			document.getElementById('z-position').innerHTML = status.posz;
+		});
+	</script>
+</body>
+</html>
