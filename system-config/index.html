@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>FabMo Configuration Example App</title>
+	<style>
+		/* Some styling, just so the page looks less "vanilla" */
+
+		body {
+			margin: 40px;
+			font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+		}
+
+		h1 {
+			font-size: 2.5rem;
+		}
+		h2 {
+			font-size: 1.5rem;
+		}
+
+		pre {
+			width: 100%;
+			border-radius: 5px;
+			border: 1px solid gray;
+			padding: 10px;
+			background-color: #eeeeee;
+		}
+
+		button {
+			cursor: pointer;
+		    background-color: #e6f2ff; /* light blue */
+			border: 1px solid gray;
+			border-radius: 3px;
+		    padding: 5px 10px;
+			text-align: center;
+			display: inline-block;
+			font-size: 1rem;
+    	}
+
+		.tool-property {
+			color: coral;
+		}
+	</style>
+	<script type="text/javascript" src="js/fabmo.js"></script>
+</head>
+<body>
+	<h1> System Configuration </h1>
+	<p>
+		This example shows how to read the FabMo system configuration.  It contains information about the tool and how it is setup.
+	</p>
+	<h2>Tool Info</h2>
+	<p>
+		This tool is a <span id="tool-name" class="tool-property">??</span> with a work envelope of <span id="envelope-x"  class="tool-property">??</span> x <span id="envelope-y"  class="tool-property">??</span>  The FabMo software version is <span id="tool-version" class="tool-property">??</span>
+	</p>
+	<p>
+		This tool is configured for <span id="tool-units" class="tool-property">??</span> units.  You can <button id="unit-button">click here</button> to toggle the units between inches and millimeters.
+	</p>
+
+	<h2>Configuration</h2>
+	<p>
+		The complete tool configuration is displayed below:
+		<pre id="full-config">No configuration loaded yet.</pre>
+	</p>
+
+	<script type="text/javascript">
+		// Create the dashboard object
+		var dashboard = new FabMoDashboard();
+		var cachedConfig = null;
+
+		// Function we call to get the configuration from the tool and update information on the page
+		var updateConfig = function() {
+			dashboard.getConfig(function(err, config) {
+				cachedConfig = config;
+				// Update the tool info statement
+				document.getElementById('tool-name').innerHTML = config.engine.profile;
+				document.getElementById('envelope-x').innerHTML = config.machine.envelope.xmax - config.machine.envelope.xmin;
+				document.getElementById('envelope-y').innerHTML = config.machine.envelope.ymax - config.machine.envelope.ymin;
+				document.getElementById('tool-units').innerHTML = config.machine.units;
+
+				// Update the configuration 
+				document.getElementById('tool-name').innerHTML = JSON.stringify(config, '   ');
+			});			
+		}
+
+		// Handler for when the "click here" button is clicked.  Toggles the units between inches and millimeters
+		document.getElementById('unit-button').addEventListener('click', function(evt) {
+			if(cachedConfig) {
+				if(cachedConfig.units === 'in') {
+					dashboard.setConfig({machine : {units : 'mm'}}, function(err) { updateConfig(); });
+				}
+				if(cachedConfig.units === 'mm') {
+					dashboard.setConfig({machine : {units : 'in'}}, function(err) { updateConfig(); });
+				}
+			}
+
+		});
+
+	</script>
+</body>
+</html>
