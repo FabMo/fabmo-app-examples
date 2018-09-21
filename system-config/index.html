@@ -8,6 +8,7 @@
 		body {
 			margin: 40px;
 			font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+			background-color: white;
 		}
 
 		h1 {
@@ -23,6 +24,7 @@
 			border: 1px solid gray;
 			padding: 10px;
 			background-color: #eeeeee;
+			overflow: scroll;
 		}
 
 		button {
@@ -37,7 +39,7 @@
     	}
 
 		.tool-property {
-			color: coral;
+			color: red;
 		}
 	</style>
 	<script type="text/javascript" src="js/fabmo.js"></script>
@@ -68,31 +70,42 @@
 
 		// Function we call to get the configuration from the tool and update information on the page
 		var updateConfig = function() {
+			console.log("updateConfig")
 			dashboard.getConfig(function(err, config) {
+				console.log("got config")
+				console.log(config)
 				cachedConfig = config;
 				// Update the tool info statement
 				document.getElementById('tool-name').innerHTML = config.engine.profile;
 				document.getElementById('envelope-x').innerHTML = config.machine.envelope.xmax - config.machine.envelope.xmin;
 				document.getElementById('envelope-y').innerHTML = config.machine.envelope.ymax - config.machine.envelope.ymin;
+				document.getElementById('tool-version').innerHTML = config.engine.version;
 				document.getElementById('tool-units').innerHTML = config.machine.units;
 
 				// Update the configuration 
-				document.getElementById('tool-name').innerHTML = JSON.stringify(config, '   ');
+				document.getElementById('full-config').innerHTML = JSON.stringify(config, null, '   ');
 			});			
 		}
 
 		// Handler for when the "click here" button is clicked.  Toggles the units between inches and millimeters
 		document.getElementById('unit-button').addEventListener('click', function(evt) {
 			if(cachedConfig) {
-				if(cachedConfig.units === 'in') {
-					dashboard.setConfig({machine : {units : 'mm'}}, function(err) { updateConfig(); });
+				console.log("changine units")
+				if(cachedConfig.machine.units === 'in') {
+					console.log("to mm");
+					dashboard.setConfig({machine : {units : 'mm'}}, function(err) { console.log("Setmm"); updateConfig(); });
 				}
-				if(cachedConfig.units === 'mm') {
-					dashboard.setConfig({machine : {units : 'in'}}, function(err) { updateConfig(); });
+				if(cachedConfig.machine.units === 'mm') {
+					console.log("to in");
+					dashboard.setConfig({machine : {units : 'in'}}, function(err) { console.log("Setin"); updateConfig(); });
 				}
+			} else {
+				console.log("no cached config");
 			}
-
 		});
+
+		// Update the configuration once at startup to fill everything in
+		updateConfig();
 
 	</script>
 </body>
