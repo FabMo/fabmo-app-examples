@@ -70,10 +70,7 @@
 
 		// Function we call to get the configuration from the tool and update information on the page
 		var updateConfig = function() {
-			console.log("updateConfig")
 			dashboard.getConfig(function(err, config) {
-				console.log("got config")
-				console.log(config)
 				cachedConfig = config;
 				// Update the tool info statement
 				document.getElementById('tool-name').innerHTML = config.engine.profile;
@@ -88,15 +85,13 @@
 		}
 
 		// Handler for when the "click here" button is clicked.  Toggles the units between inches and millimeters
+		// 1.7.0 and lower versions of FabMo take a few seconds for this change to take effect.
 		document.getElementById('unit-button').addEventListener('click', function(evt) {
 			if(cachedConfig) {
-				console.log("changine units")
 				if(cachedConfig.machine.units === 'in') {
-					console.log("to mm");
 					dashboard.setConfig({machine : {units : 'mm'}}, function(err) { console.log("Setmm"); updateConfig(); });
 				}
 				if(cachedConfig.machine.units === 'mm') {
-					console.log("to in");
 					dashboard.setConfig({machine : {units : 'in'}}, function(err) { console.log("Setin"); updateConfig(); });
 				}
 			} else {
