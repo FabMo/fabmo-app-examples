@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>FabMo Job Submit Example App</title>
+	<style>
+		/* Some styling, just so the page looks less "vanilla" */
+
+		body {
+			margin: 40px;
+			font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+		}
+
+		h1 {
+			font-size: 2.5rem;
+		}
+
+		#indicator {
+			font-weight: bold;
+			color: #008800;
+		}
+		button {
+			cursor: pointer;
+			background-color: #eeeeee; 
+			border: 1px solid gray;
+			border-radius: 3px;
+			padding: 5px 10px;
+			text-align: center;
+			display: inline-block;
+			font-size: 1rem;
+			margin-top: 5px;
+		}
+
+		input { margin-top: 10px; }
+		
+	</style>
+	<script type="text/javascript" src="js/fabmo.js"></script>
+</head>
+<body>
+	<h1> Job Submission </h1>
+	<p>
+		FabMo manages a job queue and job history.  Pending jobs form a queue, which can be managed in the Job Manager.  Apps can submit jobs to the queue by calling <strong>submitJob()</strong>, which takes a number of options that control how the job is submitted, provide information about the job being submitted, and tell the dashboard what to do once the job has been submitted.
+	</p>
+
+	<p>
+		<button id='submit-button'>Click Here</button> to submit a job!
+		<br />
+		<button id='submit3-button'>Click Here</button> to submit three jobs!
+		<br />
+		<button id='submit-stay-button'>Click Here</button> to submit a job but stay here! <span id="indicator"></span><br />
+		<input type="file" id="fileinput">
+	</p>
+
+	<script type="text/javascript">
+		
+		// Create the dashboard object
+		var dashboard = new FabMoDashboard();
+
+		SBPLines = [
+			"' This is an example file.  It moves in a square.",
+			"",
+			"MZ,1   ' Safe Z",
+			"J2,0,0 ' Jog Home",
+			"",
+			"MX,3 ",
+			"MY,3 ",
+			"MX,0 ",
+			"MY,0 ",
+			"",
+			"END"
+		]
+
+		// Submit 1
+		document.getElementById('submit-button').addEventListener('click', function(evt) {
+			dashboard.submitJob({
+				file:SBPLines.join('\n'),
+				filename : 'square-' + idx + '.sbp',
+				name : 'Square ' + idx,
+				description : 'A 3 inch square, 1 inch above the table.'
+			});
+		});
+	
+		// Submit 3
+		document.getElementById('submit3-button').addEventListener('click', function(evt) {
+			dashboard.submitJobs([{
+				file:SBPLines.join('\n'),
+				filename : 'square-1.sbp',
+				name : 'Square 1',
+				description : 'A 3 inch square, 1 inch above the table.'
+			  },
+			  {
+				file:SBPLines.join('\n'),
+				filename : 'square-2.sbp',
+				name : 'Square 2',
+				description : 'A 3 inch square, 1 inch above the table.'
+			  },
+			  {
+				file:SBPLines.join('\n'),
+				filename : 'square-3.sbp',
+				name : 'Square 3',
+				description : 'A 3 inch square, 1 inch above the table.'
+			  }]
+			);
+		});
+
+		// Submit but don't leave the app
+		document.getElementById('submit-stay-button').addEventListener('click', function(evt) {
+			dashboard.submitJob({
+				file:SBPLines.join('\n'),
+				filename : 'square.sbp',
+				name : 'Square',
+				description : "A 3 inch square, 1 inch above the table, but I didn't leave the app to submit it!"
+			},
+			{stayHere:true}, 
+			function() { 
+				var indicator = document.getElementById('indicator')
+				indicator.innerHTML = 'Submitted!';
+				setTimeout(function() {
+					indicator.innerHTML = '';
+				},2000)
+			});
+		});
+
+		// Submit file that was browsed for
+		document.getElementById('fileinput').addEventListener('input', function(evt) {
+			dashboard.submitJob(evt.target.files[0]);
+		});
+	
+
+	</script>
+</body>
+</html>

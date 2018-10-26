@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>FabMo Job Submit Example App</title>
+	<style>
+		/* Some styling, just so the page looks less "vanilla" */
+
+		body {
+			margin: 40px;
+			font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+		}
+
+		h1 {
+			font-size: 2.5rem;
+		}
+
+		#drop-zone {
+			border: 3px dashed gray;
+			font-style: italic;
+			color: gray;
+			margin: 20px;
+			padding: 20px;
+			text-align: center;
+			border-radius: 10px;
+		}
+
+	</style>
+	<script type="text/javascript" src="js/fabmo.js"></script>
+</head>
+<body>
+<output id="list"></output>
+
+
+	<h1> File Processing </h1>
+	<p>
+		One design pattern that makes for a useful app is the file "post processor" - you submit a file to the app, the app processes it, and then submits a job with the processed output.  One example might be an image that is analyzed and carved, or a toolpath that is modified before being cut.  This app takes a text file that contains a list of XYZ positions, and turns it into a job that moves the tool to those positions.  An example file looks like this:
+	</p>
+	<pre>
+		0,0,0.5
+		0,0,-0.125
+		3.5,6.2,-0.125
+		2.1,3.3,-0.125
+		0,0,-0.125
+		0,0,0.5
+	</pre>
+	<p>
+		And the app will turn it into a job that looks like this:
+	</p>
+	<pre>
+		' Converted by the FabMo file-process app example
+		J3,0,0,0.5
+		M3,0,0,-0.125
+		M3,3.5,6.2,-0.125
+		M3,2.1,3.3,-0.125
+		M3,0,0,-0.125
+		J3,0,0,0.5
+	</pre>
+
+	<div id="drop-zone">Drop file here to process...</div>
+
+	<script>
+		var dashboard = new FabMoDashboard();
+		
+		// Function for turning a CSV file into a SBP file (trivially easy)
+		function processFile(file) {
+			lines = file.split('\n');
+			output = []
+			lines.forEach(function(line) {
+				output.push('M3,' + line.trim());
+			});
+			return output.join('\n');
+		}
+
+		var dropZone = document.getElementById('drop-zone');
+
+		dropZone.addEventListener('dragover', function(evt) {
+			evt.stopPropagation();
+			evt.preventDefault();
+			evt.dataTransfer.dropEffect = 'copy'; 
+		});
+
+		dropZone.addEventListener('drop', function(evt) {
+			evt.stopPropagation();
+			evt.preventDefault();
+			// Get the file(s) dropped
+			var files = evt.dataTransfer.files; // FileList object.
+			// Get the contents of the file			
+			var reader = new FileReader();
+    		reader.readAsText(files[0], "UTF-8");
+			reader.onload = function (evt) {
+				// When content is read, process it, and submit it as a job
+				var output = processFile(evt.target.result);
+			   	dashboard.submitJob({
+					file:output,
+					filename : 'post-post.sbp',
+					name : 'Post Processed',
+					description : "A file processed by the file-process fabmo app demo."
+				});
+			}
+	  	});
+
+	</script>
+</body>
+</html>

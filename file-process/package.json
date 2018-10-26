@@ -1,0 +1,10 @@
+{
+  "name": "Position Display Example",
+  "license": "MIT",
+  "main": "./index.html",
+  "icon": "icon.png",
+  "icon_color": "#000000",
+  "version": "0.0.1",
+  "author": "Ryan Sturmer",
+  "description": "Demonstration of live tool position display."
+}
