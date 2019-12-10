@@ -1,10 +1,11 @@
 {
-  "name": "Submit Job",
+  "name": "Submit-Job Example",
+  "id": "submit-job-example",
   "license": "MIT",
   "main": "./index.html",
   "icon": "icon.png",
   "icon_color": "#000000",
   "version": "0.0.1",
   "author": "Ryan Sturmer",
-  "description": "Demonstration of job submission."
+  "description": "Demonstration of job submission to FabMo job manager."
 }

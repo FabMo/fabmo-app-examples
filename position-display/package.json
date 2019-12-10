@@ -1,5 +1,6 @@
 {
-  "name": "Position Display Example",
+  "name": "Position Example",
+  "id": "position-example",
   "license": "MIT",
   "main": "./index.html",
   "icon": "icon.png",

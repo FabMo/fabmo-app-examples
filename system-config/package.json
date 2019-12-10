@@ -1,5 +1,6 @@
 {
   "name": "Configuration Example",
+  "id": "system-config-example",
   "license": "MIT",
   "main": "./index.html",
   "icon": "icon.png",
